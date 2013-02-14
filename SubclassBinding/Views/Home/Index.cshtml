@@ -1,0 +1,27 @@
+﻿@model IEnumerable<SubclassBinding.Models.Product>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Index</title>
+</head>
+<body>
+    <div>
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        @Html.EditorFor(x => x)
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    }
+    </div>
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+</body>
+</html>

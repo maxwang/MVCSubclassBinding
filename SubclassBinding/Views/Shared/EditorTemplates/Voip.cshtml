@@ -1,0 +1,36 @@
+﻿@model SubclassBinding.Models.Voip
+
+@{
+    Layout = null;
+}
+
+<fieldset>
+    <legend>Voip</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.AreaCode)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.AreaCode)
+        @Html.ValidationMessageFor(model => model.AreaCode)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Name)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Name)
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    
+    @Html.HiddenFor( x => x.ProductType)       
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.DisplayOrder)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.DisplayOrder)
+        @Html.ValidationMessageFor(model => model.DisplayOrder)
+    </div>
+
+</fieldset>

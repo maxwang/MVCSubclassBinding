@@ -1,0 +1,29 @@
+﻿@model SubclassBinding.Models.Voip
+
+@{
+    Layout = null;
+}
+
+<fieldset>
+    <legend>Voip</legend>
+    
+    <div class="display-label">AreaCode</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AreaCode)
+    </div>
+    
+    <div class="display-label">Name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+    
+    <div class="display-label">ProductType</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductType)
+    </div>
+    
+    <div class="display-label">DisplayOrder</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DisplayOrder)
+    </div>
+</fieldset>
