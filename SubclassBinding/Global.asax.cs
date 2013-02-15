@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using SubclassBinding.Controllers;
+using SubclassBinding.Models;
 
 namespace SubclassBinding
 {
@@ -32,6 +34,8 @@ namespace SubclassBinding
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+
+            ModelBinders.Binders.Add(typeof (IEnumerable<Product>), new ProductBinder());
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);

@@ -79,7 +79,9 @@ namespace SubclassBinding.Controllers
             foreach (var key in formKeys)
             {
                 var keys = key.Split(new char[] { '.' });
-                index = int.Parse(keys[0].Substring(1, 1));
+                var startIndex = keys[0].IndexOf('[') + 1;
+                var endIndex = keys[0].IndexOf(']');
+                index = int.Parse(keys[0].Substring(startIndex, endIndex - startIndex));
                 if (results.ContainsKey(index))
                 {
                     results[index].Add(keys[1]);

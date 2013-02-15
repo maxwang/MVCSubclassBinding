@@ -21,7 +21,7 @@ namespace SubclassBinding.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index([ModelBinder(typeof(ProductBinder))] IEnumerable<Product> items)
+        public ActionResult Index(IEnumerable<Product> items)
         {
             return View("Result", items);
         }
