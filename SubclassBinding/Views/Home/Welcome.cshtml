@@ -1,0 +1,28 @@
+﻿@model SubclassBinding.Models.ProductView
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+    
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.EditorFor(x => x.Customer)
+    @Html.EditorFor( x => x.Products)  
+    <p>
+        <input type="submit" value="Save" />
+    </p>
+}
+    
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+</body>
+</html>

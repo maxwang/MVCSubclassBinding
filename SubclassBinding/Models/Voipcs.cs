@@ -10,7 +10,7 @@ namespace SubclassBinding.Models
         public string AreaCode { get; set; }
         public Voip()
         {
-            this.ProductType = this.GetType().Name;
+            this.ProductType = this.GetType().FullName;
         }
     }
 }

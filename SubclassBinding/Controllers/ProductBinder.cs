@@ -8,10 +8,21 @@ using System.Reflection;
 
 namespace SubclassBinding.Controllers
 {
+    public class Properties
+    {
+        public string ClassType { get; set; }
+        public IList<string> MyProperties { get; set; }
+
+        public Properties()
+        {
+            this.MyProperties = new List<string>();
+        }
+    }
+
     public class ProductBinder : IModelBinder
     {
-        private string _namespace = "SubclassBinding.Models";
         private string _ProductType = "ProductType";
+
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             object model = bindingContext.Model;
@@ -19,16 +30,29 @@ namespace SubclassBinding.Controllers
 
             if (modelType.Equals(typeof(IEnumerable<Product>)))
             {
-                //var ps = this.GetModelProperties(controllerContext, bindingContext);
+                bool emptyPrefix = false;
+                if (!String.IsNullOrEmpty(bindingContext.ModelName) && !bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName))
+                {
+                    if (bindingContext.FallbackToEmptyPrefix)
+                    {
+                        emptyPrefix = true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+
                 IList<Product> products = new List<Product>();
 
                 string[] formKeys = controllerContext.HttpContext.Request.Form.AllKeys.ToArray();
-                Dictionary<int, List<string>> items = ConvertItemValue(formKeys);
+
+                Dictionary<int, List<string>> items = ConvertItemValue(formKeys, bindingContext.ModelName, emptyPrefix);
 
                 Product product = null;
                 foreach (var item in items)
                 {
-                    product = GetProduct(item.Key, item.Value, bindingContext);
+                    product = GetProduct(item.Key, item.Value, bindingContext, bindingContext.ModelName, emptyPrefix);
                     if (product != null)
                     {
                         products.Add(product);
@@ -41,17 +65,19 @@ namespace SubclassBinding.Controllers
             return null;
         }
 
-        private Product GetProduct(int index, List<string> keys, ModelBindingContext bindingContext)
+        private Product GetProduct(int index, List<string> keys, ModelBindingContext bindingContext, string prefix, bool emptyPrefix)
         {
             if (!keys.Contains(_ProductType)) return null;
 
-            var key = string.Format("[{0}].{1}", index, _ProductType);
+            var key = emptyPrefix
+                          ? string.Format("[{0}].{1}", index, _ProductType)
+                          : string.Format("{0}[{1}].{2}", prefix, index, _ProductType);
 
             var valueProvider = bindingContext.ValueProvider;
 
             var productType = valueProvider.GetValue(key).AttemptedValue;
 
-            var type = Type.GetType(string.Format("{0}.{1}", _namespace, productType));
+            var type = Type.GetType(productType);
 
             if (type == null) return null;
 
@@ -64,7 +90,10 @@ namespace SubclassBinding.Controllers
                 if (itemKey.Equals(_ProductType)) continue;
                 propertyInfo = type.GetProperty(itemKey);
                 propertyInfo.SetValue(result,
-                                      valueProvider.GetValue(string.Format("[{0}].{1}", index, itemKey)).ConvertTo(propertyInfo.PropertyType),
+                                      valueProvider.GetValue(emptyPrefix
+                                                                 ? string.Format("[{0}].{1}", index, itemKey)
+                                                                 : string.Format("{0}[{1}].{2}", prefix, index, itemKey))
+                                          .ConvertTo(propertyInfo.PropertyType),
                                       null);
             }
 
@@ -72,12 +101,14 @@ namespace SubclassBinding.Controllers
 
         }
 
-        private Dictionary<int, List<string>> ConvertItemValue(string[] formKeys)
+        private Dictionary<int, List<string>> ConvertItemValue(string[] formKeys, string prefix, bool emptyPrefix)
         {
             Dictionary<int, List<string>> results = new Dictionary<int, List<string>>();
             int index = 0;
             foreach (var key in formKeys)
             {
+                if( ! emptyPrefix && ! key.StartsWith(prefix)) continue;
+                
                 var keys = key.Split(new char[] { '.' });
                 var startIndex = keys[0].IndexOf('[') + 1;
                 var endIndex = keys[0].IndexOf(']');

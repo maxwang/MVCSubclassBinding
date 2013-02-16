@@ -5,11 +5,9 @@ using System.Web;
 
 namespace SubclassBinding.Models
 {
-    public class HostedPbx : Product
+    public class MyInformation
     {
-        public HostedPbx()
-        {
-            this.ProductType = this.GetType().FullName;
-        }
+        public string Name { get; set; }
+        public string Email { get; set; }
     }
 }

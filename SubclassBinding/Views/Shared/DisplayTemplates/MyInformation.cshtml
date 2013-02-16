@@ -1,0 +1,20 @@
+﻿@model SubclassBinding.Models.MyInformation
+
+@{
+    Layout = null;
+}
+
+
+<fieldset>
+    <legend>MyInformation</legend>
+    
+    <div class="display-label">Name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+    
+    <div class="display-label">Email</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Email)
+    </div>
+</fieldset>

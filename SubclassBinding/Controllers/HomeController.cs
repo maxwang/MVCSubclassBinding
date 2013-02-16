@@ -26,5 +26,20 @@ namespace SubclassBinding.Controllers
             return View("Result", items);
         }
 
+        public ActionResult Welcome()
+        {
+            var model = new ProductView();
+            var products = new List<Product>();
+            products.Add(new HostedPbx());
+            products.Add(new Voip());
+            model.Products = products;
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Welcome(ProductView items)
+        {
+            return View("WelcomeResult", items);
+        }
     }
 }
