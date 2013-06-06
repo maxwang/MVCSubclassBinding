@@ -105,21 +105,31 @@ namespace SubclassBinding.Controllers
         {
             Dictionary<int, List<string>> results = new Dictionary<int, List<string>>();
             int index = 0;
+
+            int startIndex = 0;
+            int endIndex = 0;
+
             foreach (var key in formKeys)
             {
                 if( ! emptyPrefix && ! key.StartsWith(prefix)) continue;
                 
                 var keys = key.Split(new char[] { '.' });
-                var startIndex = keys[0].IndexOf('[') + 1;
-                var endIndex = keys[0].IndexOf(']');
-                index = int.Parse(keys[0].Substring(startIndex, endIndex - startIndex));
+
+                //if it is array in array
+                var itemIndex = keys.Count() - 2;
+
+                startIndex = keys[itemIndex].IndexOf('[') + 1;
+                endIndex = keys[itemIndex].IndexOf(']');
+
+                index = int.Parse(keys[itemIndex].Substring(startIndex, endIndex - startIndex));
+
                 if (results.ContainsKey(index))
                 {
-                    results[index].Add(keys[1]);
+                    results[index].Add(keys[itemIndex + 1]);
                 }
                 else
                 {
-                    results.Add(index, new List<string> { keys[1] });
+                    results.Add(index, new List<string> { keys[itemIndex + 1] });
                 }
             }
             return results;
